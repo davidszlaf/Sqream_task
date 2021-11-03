@@ -1,0 +1,38 @@
+FROM ubuntu:16.04
+
+RUN apt-get update -y && \
+    apt-get install -y python-pip python-dev
+
+# We copy just the requirements.txt first to leverage Docker cache
+COPY ./requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT [ "python" ]
+
+CMD [ "app.py" ]
+
+after the creation of the Image there are additional steps for flask to run.
+
+# Create a directory in your local machine named python-docker
+
+ cd /path/to/python-docker
+ pip3 install Flask
+ pip3 freeze | grep Flask >> requirements.txt
+ touch app.py
+# code into the app.py file.
+ 
+ from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, Docker!'
+	
+# we can test the app by typing: python3 -m flask run, then open a browser and go to: http://localhost:5000
+
+#to get the list if the running containers, we run: docker ps
